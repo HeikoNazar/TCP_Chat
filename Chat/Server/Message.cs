@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat
+namespace Chat.Server.Server
 {
     class Message
     {
@@ -12,7 +12,7 @@ namespace Chat
 
         public readonly DateTime dateTimeNow;
 
-        public string Content = String.Empty;
+        public string Content = string.Empty;
 
         private readonly string[] BannedWords = {"hitler", "niger", "дурень", "страховиско","666","stupid","fuck","чорт"};
         private const string hideBannedWord = "*****"; 

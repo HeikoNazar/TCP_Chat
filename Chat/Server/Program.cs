@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Text;
 using System.Linq.Expressions;
-namespace Chat;
+namespace Chat.Server;
 class Server
 {
     static string defaultDir = @"C:\Users\nazar\IT\programming\studyc#\unik\Chat\Chat\Chats\";
