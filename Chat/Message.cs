@@ -4,25 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Server.Server
+namespace Chat
 {
     class Message
     {
-        public int Id { get; set; }
 
         public readonly DateTime dateTimeNow;
 
         public string Content = string.Empty;
 
-        private readonly string[] BannedWords = {"hitler", "niger", "дурень", "страховиско","666","stupid","fuck","чорт"};
-        private const string hideBannedWord = "*****"; 
+        public string Sender;
 
-        public Message(int id, string content)
+        private readonly string[] BannedWords = {"hitler", "дурень", "666","stupid","fuck","чорт"};
+        private const string hideBannedWord = "*****";
+
+        public Message(string? content)
         {
-            dateTimeNow = DateTime.UtcNow;
-            Id = id;
+            Content = content;
+        }
+
+        public Message(string? content, string sender)
+        {
+            dateTimeNow = DateTime.Now;
 
             Content = HideBannedWords(content);
+            Sender = sender;
         }
         public string HideBannedWords(string content)
         {
@@ -43,7 +49,7 @@ namespace Chat.Server.Server
 
         public override string ToString()
         {
-            return $"{Id} {dateTimeNow} {Content}";
+            return $"{dateTimeNow} {Sender}: {Content}";
         }
 
     }

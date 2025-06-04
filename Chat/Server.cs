@@ -1,0 +1,148 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Reflection.Metadata;
+using System.IO;
+
+namespace Chat
+{
+    class Server : IСhat
+    {
+
+        public TcpListener? _listener;
+        public bool isConnected;
+        public TcpClient? _client;
+        NetworkStream? _stream;
+
+        private readonly int defaultPort = 8888;
+
+        private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
+
+        public Server()
+        {
+            _listener = new TcpListener(IPAddress.Any, defaultPort);
+            _listener.Start();
+            Console.WriteLine("Server is working. Waiting for client...");
+            _client = _listener.AcceptTcpClient();
+            Console.WriteLine("Client connected");
+        }
+        public Server(int port)
+        {
+            _listener = new TcpListener(IPAddress.Any, port);
+            _listener.Start();
+            Console.WriteLine("Server is working. Waiting for client...");
+            _client = _listener.AcceptTcpClient();
+            Console.WriteLine("Client connected");
+        }
+        public void DeleteChat(string chatName)
+        {
+            string filePath = Path.Combine(chatsFolder, chatName + ".txt");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
+
+        public void StartChat()
+        {
+            if (_listener != null && _client != null)
+            {
+                _stream = _client.GetStream();
+                _stream = _client.GetStream();
+                StreamReader reader = new StreamReader(_stream);
+                StreamWriter writer = new StreamWriter(_stream);
+                isConnected = true;
+                writer.AutoFlush = true;
+                var date = DateTime.Now.ToString("dd-MM-yyyy");
+                if (!Directory.Exists(chatsFolder))
+                {
+                    Directory.CreateDirectory(chatsFolder);
+                }
+                var filePath = Path.Combine(chatsFolder, date + ".txt");
+                using (StreamWriter fileWriter = new StreamWriter(filePath, true))
+                {
+                    
+                    fileWriter.AutoFlush = true;
+                    while (true)
+                    {
+                        var key = Console.ReadKey();
+                        if (key.Key == ConsoleKey.Escape)
+                        {
+                            EndChat();
+                            return;
+                        }
+                        else if (key.Key == ConsoleKey.Enter)
+                        {
+                            Console.Write("Server: ");
+
+                            string? messageToSend = Console.ReadLine();
+
+                            writer.WriteLine(messageToSend);
+                            Message messageWriteToFile = new Message(messageToSend, "Server");
+                            fileWriter.WriteLine(messageWriteToFile.ToString());
+
+
+                            string messagefromClient = reader.ReadLine();
+                            if (messagefromClient == null)
+                            {
+                                Console.WriteLine("Client is disconnected");
+                                return;
+                            }
+                            Console.WriteLine("Client:" + messagefromClient);
+                            Message messageFromClientToFile = new Message(messagefromClient, "Client");
+                            fileWriter.WriteLine(messageFromClientToFile.ToString());
+                        }
+                    }
+                }
+            }
+        }
+        
+        public void EndChat()
+        {
+            if (isConnected)
+            {
+                _stream.Close();
+            }
+            else
+            {
+                Console.WriteLine("No stream is running");
+            }
+        }
+        public Chat GetChat(string chatName)
+        {
+
+            var path = Path.Combine(chatsFolder, chatName + ".txt");
+            if (File.Exists(path))
+            {
+                Chat chat = new Chat(chatName);
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    string content;
+                    do
+                    {
+                        content = reader.ReadLine();
+                        chat.AddMessage(content);  
+                    }
+                    while (content != null);
+                }
+                return chat;
+            }
+            else
+            {
+                Console.WriteLine($"No chat with {chatName} name");
+                return null;
+            }
+        }
+        public string[] GetAllChats()
+        {
+            var files = Directory.GetFiles(chatsFolder);
+            
+            return files;
+        }
+    }
+}
