@@ -8,6 +8,7 @@ namespace Chat
     class Client : IСhat
     {
         public string Ip;
+        public int Port;
         public readonly int defaultPort = 8888;
         private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
         public bool isConnected;
@@ -17,22 +18,22 @@ namespace Chat
         public Client(string ip)
         {
             Ip = ip;
-            _client = new TcpClient(Ip, defaultPort);
-            Console.WriteLine("Connected to server");
-            _stream = _client.GetStream();
         }
 
         public Client(string ip, int port) 
         {
             Ip = ip;
-            _client = new TcpClient(Ip, port);
-            Console.WriteLine("Connected to server");
-            _stream = _client.GetStream();
+            Port = port;
         }
         public void StartChat()
         {
-            StreamReader reader = new StreamReader(_stream);
-            StreamWriter writer = new StreamWriter(_stream);
+            int port = Port == 0 ? defaultPort : Port;
+            _client = new TcpClient(Ip, port);
+            Console.WriteLine("Connected to server");
+            _stream = _client.GetStream();
+
+            StreamReader reader = new StreamReader(_stream,System.Text.Encoding.UTF8);
+            StreamWriter writer = new StreamWriter(_stream,System.Text.Encoding.UTF8);
             var date = DateTime.Now.ToString("dd-MM-yyyy");
             if (!Directory.Exists(chatsFolder))
             {

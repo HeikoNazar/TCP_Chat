@@ -18,26 +18,14 @@ namespace Chat
         public bool isConnected;
         public TcpClient? _client;
         NetworkStream? _stream;
-
+        public int Port;
         private readonly int defaultPort = 8888;
 
         private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
 
-        public Server()
-        {
-            _listener = new TcpListener(IPAddress.Any, defaultPort);
-            _listener.Start();
-            Console.WriteLine("Server is working. Waiting for client...");
-            _client = _listener.AcceptTcpClient();
-            Console.WriteLine("Client connected");
-        }
         public Server(int port)
         {
-            _listener = new TcpListener(IPAddress.Any, port);
-            _listener.Start();
-            Console.WriteLine("Server is working. Waiting for client...");
-            _client = _listener.AcceptTcpClient();
-            Console.WriteLine("Client connected");
+            Port = port;
         }
         public void DeleteChat(string chatName)
         {
@@ -52,10 +40,16 @@ namespace Chat
         {
             if (_listener != null && _client != null)
             {
+                int port = Port == 0 ? defaultPort : Port;
+                _listener = new TcpListener(IPAddress.Any, port);
+                _listener.Start();
+                Console.WriteLine("Server is working. Waiting for client...");
+                _client = _listener.AcceptTcpClient();
+                Console.WriteLine("Client connected");
+
                 _stream = _client.GetStream();
-                _stream = _client.GetStream();
-                StreamReader reader = new StreamReader(_stream);
-                StreamWriter writer = new StreamWriter(_stream);
+                StreamReader reader = new StreamReader(_stream, System.Text.Encoding.UTF8);
+                StreamWriter writer = new StreamWriter(_stream,System.Text.Encoding.UTF8);
                 isConnected = true;
                 writer.AutoFlush = true;
                 var date = DateTime.Now.ToString("dd-MM-yyyy");
