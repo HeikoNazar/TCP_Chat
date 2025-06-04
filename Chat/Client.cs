@@ -10,6 +10,7 @@ namespace Chat
         public string Ip;
         public readonly int defaultPort = 8888;
         private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
+        public bool isConnected;
         TcpClient _client;
         NetworkStream _stream;
 
@@ -38,33 +39,37 @@ namespace Chat
                 Directory.CreateDirectory(chatsFolder);
             }
             var filePath = Path.Combine(chatsFolder, date + ".txt");
-            StreamWriter fileWriter = new StreamWriter(filePath, true);
-            fileWriter.AutoFlush = true;
+            writer.AutoFlush = true;
 
-            while (true)
+            using (StreamWriter fileWriter = new StreamWriter(filePath, true))
             {
-                string messageFromServer = reader.ReadLine();
-                if (messageFromServer == null)
+                fileWriter.AutoFlush = true;
+                while (true)
                 {
-                    Console.WriteLine("Server disconected");
-                    return;
-                }
-                Console.WriteLine("Server: " + messageFromServer);
-                Message messageFromServerToFile = new Message(messageFromServer, "Server");
-                fileWriter.WriteLine(messageFromServer);
+                    var key = Console.ReadKey().Key;
+                    string messageFromServer = reader.ReadLine();
+                    if (messageFromServer == null)
+                    {
+                        Console.WriteLine("Server disconected");
+                        return;
+                    }
+                    Console.WriteLine("Server: " + messageFromServer);
+                    Message messageFromServerToFile = new Message(messageFromServer, "Server");
+                    fileWriter.WriteLine(messageFromServer);
 
-                if (Console.ReadKey().Key == ConsoleKey.Escape)
-                {
-                    EndChat();
-                    return;
-                }
-                else if (Console.ReadKey().Key == ConsoleKey.Enter)
-                {
-                    Console.Write("Client: ");
-                    string messageToSend = Console.ReadLine();
-                    writer.WriteLine(messageToSend);
-                    Message messageFromClientToFile = new Message(messageToSend, "Client");
-                    fileWriter.WriteLine(messageFromClientToFile);
+                    if (key == ConsoleKey.Escape)
+                    {
+                        EndChat();
+                        return;
+                    }
+                    else if (key == ConsoleKey.Enter)
+                    {
+                        Console.Write("Client: ");
+                        string messageToSend = Console.ReadLine();
+                        writer.WriteLine(messageToSend);
+                        Message messageFromClientToFile = new Message(messageToSend, "Client");
+                        fileWriter.WriteLine(messageFromClientToFile);
+                    }
                 }
             }
         }
@@ -81,7 +86,7 @@ namespace Chat
 
         public void EndChat()
         {
-            if (_stream != null)
+            if (isConnected)
             {
                 _stream.Close();
             }
@@ -109,7 +114,6 @@ namespace Chat
                     do
                     {
                         content = reader.ReadLine();
-                        Message message = new Message(content);
                         chat.AddMessage(content);
                     }
                     while (content != null);

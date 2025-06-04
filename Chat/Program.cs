@@ -14,7 +14,6 @@ class Program
     static void Main() 
     {
         Console.OutputEncoding = Encoding.UTF8;
-        bool isWorking = true;
         Console.WriteLine("Choose role");
         string[] roles = { "1. Server", "2. Client" };
         foreach (var item in roles)

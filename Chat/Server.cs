@@ -115,7 +115,6 @@ namespace Chat
         }
         public Chat GetChat(string chatName)
         {
-
             var path = Path.Combine(chatsFolder, chatName + ".txt");
             if (File.Exists(path))
             {
@@ -141,7 +140,6 @@ namespace Chat
         public string[] GetAllChats()
         {
             var files = Directory.GetFiles(chatsFolder);
-            
             return files;
         }
     }
