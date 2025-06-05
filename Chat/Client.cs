@@ -85,7 +85,7 @@ namespace Chat
         {
             if (isConnected)
             {
-                _stream.Close();
+                _stream.Dispose();
                 _client.Dispose();
             }
             else
