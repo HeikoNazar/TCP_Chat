@@ -15,7 +15,7 @@ namespace Chat
 
         public string Sender;
 
-        private readonly string[] BannedWords = {"hitler", "дурень", "666","stupid","fuck","чорт"};
+        private readonly string[] BannedWords = {"hitler", "дурень", "666","stupid","чорт"};
         private const string hideBannedWord = "*****";
 
         public Message(string? content)

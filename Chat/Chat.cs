@@ -22,7 +22,6 @@ namespace Chat
         }
         public void AddMessage(string content)
         {
-            
             Messages.Add(content);
         }
     }
