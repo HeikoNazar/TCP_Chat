@@ -23,6 +23,10 @@ namespace Chat
 
         private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
 
+        public Server()
+        {
+            
+        }
         public Server(int port)
         {
             Port = port;
@@ -38,11 +42,12 @@ namespace Chat
 
         public void StartChat()
         {
-            if (_listener != null && _client != null)
-            {
+
+                
                 int port = Port == 0 ? defaultPort : Port;
                 _listener = new TcpListener(IPAddress.Any, port);
                 _listener.Start();
+                
                 Console.WriteLine("Server is working. Waiting for client...");
                 _client = _listener.AcceptTcpClient();
                 Console.WriteLine("Client connected");
@@ -94,13 +99,15 @@ namespace Chat
                     }
                 }
             }
-        }
+        
         
         public void EndChat()
         {
             if (isConnected)
             {
-                _stream.Close();
+                _stream.Dispose();
+                _listener.Stop();
+                _client.Dispose();
             }
             else
             {

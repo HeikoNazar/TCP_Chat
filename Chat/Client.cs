@@ -90,6 +90,7 @@ namespace Chat
             if (isConnected)
             {
                 _stream.Close();
+                _client.Dispose();
             }
             else
             {

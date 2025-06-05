@@ -10,7 +10,6 @@ using System.Threading.Channels;
 namespace Chat;
 class Program
 {
-    
     static void Main() 
     {
         Console.OutputEncoding = Encoding.UTF8;
@@ -57,8 +56,6 @@ class Program
         {
             throw new FormatException("Wrong format");
         }
-
-
     }
     static void RunningRole(IСhat role)
     {
