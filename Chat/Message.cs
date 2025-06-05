@@ -32,6 +32,10 @@ namespace Chat
         }
         public string HideBannedWords(string content)
         {
+            if (content == null)
+            {
+                return String.Empty;
+            }
             var split = content.Split();
             
             
