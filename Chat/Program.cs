@@ -78,6 +78,10 @@ class Program
                     Console.WriteLine("Input chat name \t Format: dd-MM-yyyy");
                     string chatName = Console.ReadLine();
                     var chat = role.GetChat(chatName);
+                    if(chat == null)
+                    {
+                        break;
+                    }
                     foreach (var item in chat.Messages)
                     {
                         Console.WriteLine(item);

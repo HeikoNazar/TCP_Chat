@@ -48,11 +48,15 @@ namespace Chat
                 while (true)
                 {
                     var key = Console.ReadKey().Key;
-                    string messageFromServer = reader.ReadLine();
-                    if (messageFromServer == null)
+                    string messageFromServer;
+                    try
+                    {
+                        messageFromServer = reader.ReadLine();
+                    }
+                    catch (IOException)
                     {
                         Console.WriteLine("Server disconected");
-                        return;
+                        messageFromServer = String.Empty;
                     }
                     Console.WriteLine("Server: " + messageFromServer);
                     Message messageFromServerToFile = new Message(messageFromServer, "Server");
@@ -81,6 +85,10 @@ namespace Chat
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
+            }
+            else
+            {
+                Console.WriteLine($"No chat with {chatName} name");
             }
         }
 

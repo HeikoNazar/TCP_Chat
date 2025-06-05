@@ -41,11 +41,14 @@ namespace Chat
             {
                 File.Delete(filePath);
             }
+            else
+            {
+                Console.WriteLine($"No chat with {chatName} name");
+            }
         }
 
         public void StartChat()
         {
-
             int port = Port == 0 ? defaultPort : Port;    
             _listener = new TcpListener(Ip,port);
             _listener.Start();
