@@ -62,7 +62,7 @@ class Program
     }
     static void RunningRole(IСhat role)
     {
-        string[] options = { "1.Start chat", "2. Show chat", "3. Show all chats", "4. Delete chat", "5. Stop program","6. Clear console" };
+        string[] options = { "1.Start chat", "2. Show chat", "3. Show all chats", "4. Delete chat", "5. Stop program","6. Clear console"};
         bool isWorking = true;
         while (isWorking)
         {
