@@ -5,16 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Chat
 {
-    class Client : IСhat
+    class Client : WorkWithFiles,IСhat
     {
         public string Ip;
-        public int Port;
-        public readonly int defaultPort = 8888;
-        private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
-        public bool isConnected;
-        TcpClient _client;
-        NetworkStream _stream;
-
         public Client(string ip)
         {
             Ip = ip;
@@ -28,7 +21,15 @@ namespace Chat
         public void StartChat()
         {
             int port = Port == 0 ? defaultPort : Port;
-            _client = new TcpClient(Ip, port);
+            try
+            {
+                _client = new TcpClient(Ip, port);
+            }
+            catch (SocketException )
+            {
+                Console.WriteLine("Probelms with connection");
+                return;
+            }
             Console.WriteLine("Connected to server");
             _stream = _client.GetStream();
 
@@ -79,20 +80,7 @@ namespace Chat
             }
         }
 
-        public void DeleteChat(string chatName)
-        {
-            string filePath = Path.Combine(chatsFolder, chatName + ".txt");
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-            else
-            {
-                Console.WriteLine($"No chat with {chatName} name");
-            }
-        }
-
-
+     
         public void EndChat()
         {
             if (isConnected)
@@ -103,37 +91,6 @@ namespace Chat
             else
             {
                 Console.WriteLine("No stream is running");
-            }
-        }
-
-        public string[] GetAllChats()
-        {
-            var files = Directory.GetFiles(chatsFolder);
-            return files;
-        }
-
-        public Chat GetChat(string chatName)
-        {
-            var path = Path.Combine(chatsFolder, chatName + ".txt");
-            if (File.Exists(path))
-            {
-                Chat chat = new Chat(chatName);
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    string content;
-                    do
-                    {
-                        content = reader.ReadLine();
-                        chat.AddMessage(content);
-                    }
-                    while (content != null);
-                }
-                return chat;
-            }
-            else
-            {
-                Console.WriteLine($"No chat with {chatName} name");
-                return null;
             }
         }
     }

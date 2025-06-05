@@ -9,8 +9,6 @@ namespace Chat
     
    interface IСhat
     {
-
-        
         void StartChat();
 
         Chat GetChat(string chatName);

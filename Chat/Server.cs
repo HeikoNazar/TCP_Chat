@@ -8,21 +8,15 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using System.IO;
+using System.Diagnostics;
 
 namespace Chat
 {
-    class Server : IСhat
+    class Server : WorkWithFiles,IСhat
     {
         public readonly IPAddress Ip;
         public TcpListener? _listener;
-        public bool isConnected;
-        public TcpClient? _client;
-        NetworkStream? _stream;
-        public int Port;
-        private readonly int defaultPort = 8888;
-
-        private readonly string chatsFolder = Path.GetFullPath("ChatHistory");
-
+        
         public Server()
         {
             var host = Dns.GetHostName();
@@ -34,25 +28,13 @@ namespace Chat
             var host = Dns.GetHostName();
             Ip = Dns.GetHostEntry(host).AddressList[3];
         }
-        public void DeleteChat(string chatName)
-        {
-            string filePath = Path.Combine(chatsFolder, chatName + ".txt");
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-            else
-            {
-                Console.WriteLine($"No chat with {chatName} name");
-            }
-        }
+        
 
         public void StartChat()
         {
             int port = Port == 0 ? defaultPort : Port;    
             _listener = new TcpListener(Ip,port);
             _listener.Start();
-                
             Console.WriteLine($"Server is running on {Ip.ToString()}::{port}. Waiting for client...");
             _client = _listener.AcceptTcpClient();
             Console.WriteLine("Client connected");
@@ -116,34 +98,6 @@ namespace Chat
                 Console.WriteLine("No stream is running");
             }
         }
-        public Chat GetChat(string chatName)
-        {
-            var path = Path.Combine(chatsFolder, chatName + ".txt");
-            if (File.Exists(path))
-            {
-                Chat chat = new Chat(chatName);
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    string content;
-                    do
-                    {
-                        content = reader.ReadLine();
-                        chat.AddMessage(content);  
-                    }
-                    while (content != null);
-                }
-                return chat;
-            }
-            else
-            {
-                Console.WriteLine($"No chat with {chatName} name");
-                return null;
-            }
-        }
-        public string[] GetAllChats()
-        {
-            var files = Directory.GetFiles(chatsFolder);
-            return files;
-        }
+        
     }
 }

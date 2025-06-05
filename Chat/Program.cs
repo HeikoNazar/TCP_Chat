@@ -19,12 +19,12 @@ class Program
         {
             Console.WriteLine(item);
         }
-        var role = Convert.ToInt32(Console.ReadLine());
+        var role = Convert.ToInt32(Console.ReadLine()); 
+        Console.WriteLine("Input port");
+        var port = Convert.ToInt32(Console.ReadLine());
         if (role == 1)
         {
             Server server;
-            Console.WriteLine("Input port");
-            var port = Convert.ToInt32(Console.ReadLine());
             if (port == 0)
             {
                 server = new Server();
@@ -40,8 +40,6 @@ class Program
             Client client;
             Console.WriteLine("Input ip");
             string ip = Console.ReadLine();
-            Console.WriteLine("Input port");
-            var port = Convert.ToInt32(Console.ReadLine());
             if (port == 0)
             {
                 client = new Client(ip);
