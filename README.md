@@ -38,4 +38,15 @@ IP (nternet Protocol) — протокол мережевого рівня дл�
 ## Очистити консоль
 Очищує консоль
 ## Зв'язок класів та інтерфейсів
+![UML Diagram](doc/clasess-diagram.svg)
 
+- BasicFunctionWithChat - це методи для роботи з чатом(файлом), вони включають DeleteChat(string chatName), GetAllChats(), GetChat(string chatName).
+- WorkWithFiles - був створений, щоб запобігти дублюванню коду, так як Server і Client містять схожі методи і поля.
+## Надсидання повідомлення
+![UML Diagram](doc/plantuml-diagram.svg)
+- Повідомлення записуються у файл у форматі "{dateTimeNow} {Sender}: {Content}"
+- Ім'я кожного чату(файлу) це дата коли чат було розпочато
+### To Do list
+- можливість асинхроного надсилання даних, без очіквання сервера/клієнта
+- під'єднання декількох клієнтів
+- вийти за межі LAN
